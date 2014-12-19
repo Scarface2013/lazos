@@ -1,7 +1,7 @@
 import java.awt.*;
-import javax.swing.ImageIcon;
-import javax.swing.JFrame;
-
+//import javax.swing.ImageIcon;
+//import javax.swing.JFrame;
+import javax.swing.*;
 
 public class LazosMain extends JFrame {
 
@@ -11,6 +11,7 @@ public class LazosMain extends JFrame {
 		lazos.run();
 	}
 	
+	private Sprite sprite;
 	private ScreenManager s;
 	private Image bg;
 	private Animation a;
@@ -52,6 +53,10 @@ public class LazosMain extends JFrame {
 		a.addScene(CircleB,250);
 		a.addScene(CircleV,250);
 		a.addScene(CircleP,250);
+		
+		sprite = new Sprite(a);
+		sprite.setVelX(0.3f);
+		sprite.setVelY(0.6f);
 	}
 	
 	//main engine
@@ -72,10 +77,10 @@ public class LazosMain extends JFrame {
 		long startingTime = System.currentTimeMillis();
 		long cumTime = startingTime;
 		
-		while(cumTime - startingTime < 5000){
+		while(cumTime - startingTime < 10000){
 			 long timePassed = System.currentTimeMillis() - cumTime;
 			 cumTime += timePassed;
-			 a.update(timePassed);
+			 update(timePassed);
 			 
 			 //draws screen
 			 Graphics2D g = s.getGraphics();
@@ -91,6 +96,19 @@ public class LazosMain extends JFrame {
 	//draws graphics
 	public void draw(Graphics g){
 		g.drawImage(bg,0,0,null);
-		g.drawImage(a.getImage(),600,600,null);
+		g.drawImage(sprite.getImage(),   Math.round(sprite.getX()),   Math.round(sprite.getY()),   null);
+	}
+	
+	//update sprite
+	public void update(long timePassed){
+		//Checks left/right boundaries
+		if(sprite.getX() <= 0){sprite.setVelX( Math.abs( sprite.getVelX() ) );
+		}else if(sprite.getX() + sprite.getWidth() >= s.getWidth()){sprite.setVelX( -Math.abs( sprite.getVelX() ) );}
+		//Checks top/bottom boundaries
+		if(sprite.getY() <= 0){sprite.setVelY( Math.abs( sprite.getVelY() ) );
+		}else if(sprite.getY() + sprite.getHeight() >= s.getHeight()){sprite.setVelY( -Math.abs( sprite.getVelY() ) );}
+		
+		//Updates sprite
+		sprite.update(timePassed);
 	}
 }
