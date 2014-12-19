@@ -43,4 +43,71 @@ public class ScreenManager {
 		if(m1.getRefreshRate()!=DisplayMode.REFRESH_RATE_UNKNOWN && m2.getRefreshRate()!=DisplayMode.REFRESH_RATE_UNKNOWN && m1.getRefreshRate()!=m2.getRefreshRate()){return false;} //Refresh rate testing
 		return true;
 	}
+	//make frame full screen
+	public void setFullscreen(DisplayMode dm){
+		JFrame f = new JFrame();
+		f.setUndecorated(true);
+		f.setIgnoreRepaint(true);
+		f.setResizable(false);
+		vc.setFullScreenWindow(f);
+		
+		if(dm != null && vc.isDisplayChangeSupported()){
+			try{
+				vc.setDisplayMode(dm);
+			}catch(Exception ex){}
+		}
+		f.createBufferStrategy(2);
+	}
+	
+	//set Graphics object == this
+	public Graphics2D getGraphics(){
+		Window w = vc.getFullScreenWindow();
+		if(w!= null){
+			BufferStrategy s = w.getBufferStrategy();
+			return(Graphics2D)s.getDrawGraphics();
+		}else{return null;}
+	}
+	//Updates display
+	public void update(){
+		Window w = vc.getFullScreenWindow();
+		if(w != null){
+			BufferStrategy s = w.getBufferStrategy();
+			if(!s.contentsLost()){s.show();}
+		}
+	}
+	
+	//Returns fullscreen window
+	public Window getFullScreenWindow(){
+		return vc.getFullScreenWindow();
+	}
+	
+	//Returns int width OR 0 if null
+	public int getWidth(){ 
+		Window w = vc.getFullScreenWindow();
+		if(w !=null){
+			return w.getWidth();
+		}else{return 0;}
+	}
+	//Returns int height OR 0 if null
+	public int getHeight(){
+		Window w = vc.getFullScreenWindow();
+		if(w !=null){
+			return w.getHeight();
+		}else{return 0;}
+	}
+	
+	//get out of fullscreen
+	public void restoreScreen(){
+		Window w = vc.getFullScreenWindow();
+		if(w!=null){w.dispose();}
+		vc.setFullScreenWindow(null);
+	}
+	public BufferedImage createCompatibleImage(int w, int h, int t){  //Width(w), height(h), and transparency(t)
+		Window win = vc.getFullScreenWindow();
+		if(win!=null){
+			GraphicsConfiguration gc = win.getGraphicsConfiguration();
+			return gc.createCompatibleImage(w,h,t);
+		}
+		return null;
+	}
 }

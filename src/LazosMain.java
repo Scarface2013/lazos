@@ -3,20 +3,37 @@ import javax.swing.ImageIcon;
 import javax.swing.JFrame;
 
 
-public class Apple extends JFrame {
+public class LazosMain extends JFrame {
 
 	public static void main(String[] args) {
 		// TODO Auto-generated method stub
-		DisplayMode dm = new DisplayMode(800,600, 16, DisplayMode.REFRESH_RATE_UNKNOWN);
-		Apple a = new Apple();
-		a.run(dm);
+		LazosMain lazos = new LazosMain();
+		lazos.run();
 	}
-	private Screen s;
+	
+	private ScreenManager s;
 	private Image bg;
 	private Animation a;
+	private static final DisplayMode modes1[] = { 
+		new DisplayMode(1920,1080,32,0),
+		new DisplayMode(1920,1080,24,0),
+		new DisplayMode(1920,1080,16,0),
+		new DisplayMode(1600,900,32,0),
+		new DisplayMode(1600,900,24,0),
+		new DisplayMode(1600,900,16,0),
+		new DisplayMode(1366,768,32,0),
+		new DisplayMode(1366,768,24,0),
+		new DisplayMode(1366,768,16,0),
+		new DisplayMode(800,600,32,0),
+		new DisplayMode(800,600,24,0),
+		new DisplayMode(800,600,16,0),
+		new DisplayMode(640,480,32,0),
+		new DisplayMode(800,600,24,0),
+		new DisplayMode(800,600,16,0),
+		};
 	
 	//loads pics from computer into java
-	public void loadPics(){
+	public void loadImages(){
 		bg = new ImageIcon("C:\\Users\\Travis\\Desktop\\Programming\\eclipse\\Workstation\\GameOne\\Artwork\\Background1920.jpg").getImage();
 		Image CircleR = new ImageIcon("C:\\Users\\Travis\\Desktop\\Programming\\eclipse\\Workstation\\GameOne\\Artwork\\CircleRed.png").getImage();
 		Image CircleO = new ImageIcon("C:\\Users\\Travis\\Desktop\\Programming\\eclipse\\Workstation\\GameOne\\Artwork\\CircleOrange.png").getImage();
@@ -38,11 +55,12 @@ public class Apple extends JFrame {
 	}
 	
 	//main engine
-	public void run(DisplayMode dm){
-		s = new Screen();
+	public void run(){
+		s = new ScreenManager();
 		try{
-			s.setFullScreen(dm, new JFrame());
-			loadPics();
+			DisplayMode dm = s.findFirstCompatibleMode(modes1);
+			s.setFullscreen(dm);
+			loadImages();
 			movieLoop();
 		}finally{
 			s.restoreScreen();
@@ -59,16 +77,18 @@ public class Apple extends JFrame {
 			 cumTime += timePassed;
 			 a.update(timePassed);
 			 
-			 Graphics g = s.getFullScreenWindow().getGraphics();
+			 //draws screen
+			 Graphics2D g = s.getGraphics();
 			 draw(g);
 			 g.dispose();
+			 s.update();
 			 
 			 try{
 				 Thread.sleep(20);
 			 }catch(Exception ex){}
 		}
 	}
-	
+	//draws graphics
 	public void draw(Graphics g){
 		g.drawImage(bg,0,0,null);
 		g.drawImage(a.getImage(),600,600,null);

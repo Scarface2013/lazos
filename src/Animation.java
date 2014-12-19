@@ -3,14 +3,14 @@ import java.util.ArrayList;
 
 public class Animation {
 
-	private ArrayList scenes;
+	private ArrayList<oneScene> scenes;
 	private int sceneIndex;
 	private long movieTime;
 	private long totalTime;
 	
 	//CONSTRUCTOR
 	public Animation() {
-		scenes = new ArrayList();
+		scenes = new ArrayList<oneScene>();
 		totalTime = 0;
 		start();
 	}
