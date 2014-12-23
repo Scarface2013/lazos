@@ -1,7 +1,5 @@
 import java.awt.*;
 
-import javax.swing.*;
-
 public abstract class Core {
 	private static DisplayMode modes [] = {
 		new DisplayMode(1920,1080,32,0),
@@ -17,8 +15,8 @@ public abstract class Core {
 		new DisplayMode(800,600,24,0),
 		new DisplayMode(800,600,16,0),
 		new DisplayMode(640,480,32,0),
-		new DisplayMode(800,600,24,0),
-		new DisplayMode(800,600,16,0)
+		new DisplayMode(640,480,24,0),
+		new DisplayMode(640,480,16,0)
 	};
 	
 	private boolean running;

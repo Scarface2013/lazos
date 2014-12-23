@@ -1,16 +1,16 @@
 //SHORT
 fix dependency so that Sprite doesn't need to have an Animated type
-have sprite move on keypress (momentum?)
-
+replace placeholder laser art
 
 
 //MEH
 add actual menu screen
 set colour picking
+add ability for multiple lasers onscreen at a time
 
 
 //LONG
-program laser logic (move to mouse)
+program laser logic (move to mouse) [still need collision detection]
 
 
 

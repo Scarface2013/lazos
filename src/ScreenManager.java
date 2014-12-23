@@ -1,7 +1,7 @@
 import java.awt.*;
 import java.awt.image.BufferStrategy;
 import java.awt.image.BufferedImage;
-import java.lang.reflect.InvocationTargetException;
+//import java.lang.reflect.InvocationTargetException;
 import javax.swing.JFrame;
 
 
@@ -102,6 +102,8 @@ public class ScreenManager {
 		if(w!=null){w.dispose();}
 		vc.setFullScreenWindow(null);
 	}
+	
+	
 	public BufferedImage createCompatibleImage(int w, int h, int t){  //Width(w), height(h), and transparency(t)
 		Window win = vc.getFullScreenWindow();
 		if(win!=null){
