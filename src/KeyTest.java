@@ -42,8 +42,8 @@ public class KeyTest extends Core implements KeyListener {
 		a.addScene(CircleR,250); //Sprite MUST use type Animation  (Find workaround plz)
 		
 		sprite = new Sprite(a);
-		sprite.setVelX(0.3f);
-		sprite.setVelY(0.6f);
+		sprite.setVelX(0.1f);
+		sprite.setVelY(0.1f);
 	}
 	
 																//KEYLISTENERS
@@ -60,9 +60,24 @@ public class KeyTest extends Core implements KeyListener {
 			e.consume();
 		}
 		
-		//Checks when to move right
+		//Checks when to move left/right
 		if(keyCode == KeyEvent.VK_RIGHT){
-			
+			sprite.setVelX(sprite.getVelX() + .1f);
+			e.consume();
+		}
+		if(keyCode == KeyEvent.VK_LEFT){
+			sprite.setVelX(sprite.getVelX() - .1f);
+			e.consume();
+		}
+		
+		//Checks when to move down/up
+		if(keyCode == KeyEvent.VK_DOWN){
+			sprite.setVelY(sprite.getVelY() + .1f);
+			e.consume();
+		}
+		if(keyCode == KeyEvent.VK_UP){
+			sprite.setVelY(sprite.getVelY() - .1f);
+			e.consume();
 		}
 		
 	}
@@ -77,11 +92,13 @@ public class KeyTest extends Core implements KeyListener {
 	public void keyTyped(KeyEvent e){e.consume();}
 	
 	
+	
+	
 																//DRAW METHOD
 	public synchronized void draw(Graphics2D g){
 		//Window w = s.getFullScreenWindow();
 		g.drawImage(bg, 0, 0, null);
-		g.drawImage(sprite.getImage(), 0, 0, null);
+		g.drawImage(sprite.getImage(),   Math.round(sprite.getX()),   Math.round(sprite.getY()),   null);
 		
 	}
 	
