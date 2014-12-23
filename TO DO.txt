@@ -1,0 +1,16 @@
+//SHORT
+fix dependency so that Sprite doesn't need to have an animated type
+have sprite move on keypress (momentum?)
+
+
+
+//MEH
+add actual menu screen
+set colour picking
+
+
+//LONG
+program laser logic (move to mouse)
+
+
+

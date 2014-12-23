@@ -38,6 +38,8 @@ public abstract class Core {
 			s.restoreScreen();
 		}
 	}
+	
+	
 	public void init(){
 		s = new ScreenManager();
 		DisplayMode dm = s.findFirstCompatibleMode(modes);
@@ -47,8 +49,31 @@ public abstract class Core {
 		w.setFont(new Font ("Times New Roman", Font.PLAIN,20));
 		w.setBackground(Color.decode("#c4e3e8"));
 		w.setForeground(Color.decode("#9c9a64"));
+		running = true;
 		
 	}
-	
-	
+	//main gameloop
+	public void gameLoop(){
+		long startingTime = System.currentTimeMillis();
+		long cumTime = startingTime;
+		
+		while(running){
+			 long timePassed = System.currentTimeMillis() - cumTime;
+			 cumTime += timePassed;
+			 update(timePassed);
+			 
+			 //draws screen
+			 Graphics2D g = s.getGraphics();
+			 draw(g);
+			 g.dispose();
+			 s.update();
+			 
+			 try{
+				 Thread.sleep(20);
+			 }catch(Exception ex){}
+		}
+	}
+	//update animations
+	public void update(long timePassed){}
+	public abstract void draw(Graphics2D g);
 }
