@@ -21,6 +21,7 @@ public abstract class Core {
 	
 	private boolean running;
 	protected ScreenManager s;
+	protected long cumTime;
 	
 	//Stop method
 	public void stop(){
@@ -57,12 +58,14 @@ public abstract class Core {
 		
 		while(running){
 			 long timePassed = System.currentTimeMillis() - cumTime;
+			 this.cumTime = cumTime;
 			 cumTime += timePassed;
 			 update(timePassed);
 			 
 			 //draws screen
 			 Graphics2D g = s.getGraphics();
 			 draw(g);
+			 checkCollisions();
 			 g.dispose();
 			 s.update();
 			 
@@ -71,6 +74,8 @@ public abstract class Core {
 			 }catch(Exception ex){}
 		}
 	}
+	public void checkCollisions(){}
+
 	//update animations
 	public void update(long timePassed){}
 	public abstract void draw(Graphics2D g);

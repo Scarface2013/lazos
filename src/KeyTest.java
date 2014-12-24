@@ -1,6 +1,7 @@
 import java.awt.*;
 import java.awt.event.KeyEvent;
 import java.awt.event.KeyListener;
+import java.util.ArrayList;
 
 import javax.swing.ImageIcon;
 
@@ -13,7 +14,10 @@ public class KeyTest extends Core implements KeyListener {
 	private Image bg;
 	private Animation a;
 	private Animation laserAnim;
-	private Sprite laser;
+	private int laserCount;
+	private ArrayList<Sprite> lasers = new ArrayList<Sprite>();
+	private ArrayList<Long> lasers2 = new ArrayList<Long>();
+	private float speedMod;
 	
 	//init from superclass							MUST RUN FIRST
 	public void init(){								//	  |
@@ -42,11 +46,14 @@ public class KeyTest extends Core implements KeyListener {
 		
 		laserAnim = new Animation();
 		laserAnim.addScene(CircleB, 250);
+		laserCount = 0;
+		speedMod = 1f;
 		
 		sprite = new Sprite(a);
 		sprite.setVelX(0.1f);
 		sprite.setVelY(0.1f);
 	}
+	
 	
 																//KEYLISTENERS
 	
@@ -78,28 +85,94 @@ public class KeyTest extends Core implements KeyListener {
 			e.consume();
 		}
 		
-		if(keyCode == KeyEvent.VK_SPACE){
-			laser = new Sprite(laserAnim);
-			laser.setX(sprite.getX());
-			laser.setY(sprite.getY());
-			System.out.println(   ((float)MouseInfo.getPointerInfo().getLocation().getX()-sprite.getX())/1000   );
-			System.out.println(   ((float)MouseInfo.getPointerInfo().getLocation().getY()-sprite.getY())/1000   );
-			laser.setVelX(   ((float)MouseInfo.getPointerInfo().getLocation().getX()-sprite.getX())/1000   );
-			laser.setVelY(   ((float)MouseInfo.getPointerInfo().getLocation().getY()-sprite.getY())/1000   );
+		
+		//SpeedMod set
+		
+		
+		//WARNING ------ Low speedmodes break the delay on collision detection so you may shoot yourself  (((need to fix w/ inverse math but shit went awry)))
+		if(keyCode == KeyEvent.VK_1){
+			speedMod = .01f;
 			e.consume();
-			
 		}
+		if(keyCode == KeyEvent.VK_2){
+			speedMod = .05f;
+			e.consume();
+		}
+		if(keyCode == KeyEvent.VK_3){
+			speedMod = .1f;
+			e.consume();
+		}
+		if(keyCode == KeyEvent.VK_4){
+			speedMod = .5f;
+			e.consume();
+		}
+		if(keyCode == KeyEvent.VK_5){
+			speedMod = 1f;
+			e.consume();
+		}
+		if(keyCode == KeyEvent.VK_6){
+			speedMod = 2f;
+			e.consume();
+		}
+		if(keyCode == KeyEvent.VK_7){
+			speedMod = 5f;
+			e.consume();
+		}
+		if(keyCode == KeyEvent.VK_8){
+			speedMod = 10f;
+			e.consume();
+		}
+		if(keyCode == KeyEvent.VK_9){
+			speedMod = 20f;
+			e.consume();
+		}
+		
+		//RESTART
+		if(keyCode == KeyEvent.VK_R){
+			lasers2.clear();
+			lasers.clear();
+			laserCount = 0;
+			e.consume();
+		}
+		
+		if(keyCode == KeyEvent.VK_SPACE){
+			lasers.add(new Sprite(laserAnim));
+			lasers2.add(cumTime);
+			lasers.get(laserCount).setVelX(   ((float)MouseInfo.getPointerInfo().getLocation().getX()-sprite.getX())/1000   );
+			lasers.get(laserCount).setVelY(   ((float)MouseInfo.getPointerInfo().getLocation().getY()-sprite.getY())/1000   );
+			
+			lasers.get(laserCount).setX(sprite.getX()  );
+			lasers.get(laserCount).setY(sprite.getY()  );
+			laserCount++;
+			e.consume();
+		}
+		
+		
+		
+		
 		
 	}
 	//Key Released
 	public void keyReleased(KeyEvent e){
-		e.consume();
+		int keyCode = e.getKeyCode();
+		
+		
 	}
 	
 	//useless but needed for implement
 	public void keyTyped(KeyEvent e){e.consume();}
 	
 	
+	public void checkCollisions(){
+		super.checkCollisions();
+		for(int x = 0; x < lasers.size(); x++){
+			if(sprite.getBounds().intersects(lasers.get(x).getBounds()) && lasers2.get(x)+1000<cumTime){
+				lasers2.clear();
+				lasers.clear();
+				laserCount = 0;
+			}
+		}
+	}
 	
 	
 																//DRAW METHOD
@@ -108,9 +181,14 @@ public class KeyTest extends Core implements KeyListener {
 		g.drawImage(bg, 0, 0, null);
 		g.drawImage(sprite.getImage(),   Math.round(sprite.getX()),   Math.round(sprite.getY()),   null);
 		
-		try{
-			g.drawImage(laser.getImage(),   Math.round(laser.getX()),   Math.round(laser.getY()),   null);
-		}catch(Exception ex){}
+		
+		//Draws all lasers
+		for(int x = 0; x < lasers.size(); x++){
+			try{
+				g.drawImage(lasers.get(x).getImage(),   Math.round(lasers.get(x).getX()),   Math.round(lasers.get(x).getY()),   null);
+			}catch(Exception ex){}
+		}
+		
 		
 		
 	}
@@ -125,19 +203,23 @@ public class KeyTest extends Core implements KeyListener {
 		}else if(sprite.getY() + sprite.getHeight() >= s.getHeight()){sprite.setVelY( -Math.abs( sprite.getVelY() ) );}
 		
 		//Updates sprite
-		sprite.update(timePassed);
+		sprite.update(timePassed, speedMod);
 		
 		
-		try{
-		//Checks left/right boundaries for laser
-		if(laser.getX() <= 0){laser.setVelX( Math.abs( laser.getVelX() ) );
-		}else if(laser.getX() + laser.getWidth() >= s.getWidth()){laser.setVelX( -Math.abs( laser.getVelX() ) );}
-		//Checks top/bottom boundaries
-		if(laser.getY() <= 0){laser.setVelY( Math.abs( laser.getVelY() ) );
-		}else if(laser.getY() + laser.getHeight() >= s.getHeight()){laser.setVelY( -Math.abs( laser.getVelY() ) );}
+		//updates ALL lasers
+		for(int x = 0; x < lasers.size(); x++){
+			try{
+				//Checks left/right boundaries for laser
+				if(lasers.get(x).getX() <= 0){lasers.get(x).setVelX( Math.abs( lasers.get(x).getVelX() ) );
+				}else if(lasers.get(x).getX() + lasers.get(x).getWidth() >= s.getWidth()){lasers.get(x).setVelX( -Math.abs( lasers.get(x).getVelX() ) );}
+				//Checks top/bottom boundaries
+				if(lasers.get(x).getY() <= 0){lasers.get(x).setVelY( Math.abs( lasers.get(x).getVelY() ) );
+				}else if(lasers.get(x).getY() + lasers.get(x).getHeight() >= s.getHeight()){lasers.get(x).setVelY( -Math.abs( lasers.get(x).getVelY() ) );}
+				
+				//Updates laser
+				lasers.get(x).update(timePassed, speedMod);
+				}catch(Exception e){}
+		}
 		
-		//Updates laser
-		laser.update(timePassed);
-		}catch(Exception e){}
 	}
 }

@@ -1,4 +1,5 @@
 import java.awt.Image;
+import java.awt.Rectangle;
 
 public class Sprite {
 	
@@ -7,17 +8,19 @@ public class Sprite {
 	private float posY;
 	private float velX;
 	private float velY;
+	private KeyTest key;
 	
 	//CONSTRUCTOR
 	public Sprite(Animation a){
 		this.a = a;
 	}
 	//Change position
-	public void update(long timePassed){
-		posX += velX * timePassed;
-		posY += velY * timePassed;
-		a.update(timePassed);
-		
+	public void update(long timePassed, float speedMod){
+		try{
+			posX += velX * timePassed * speedMod;
+			posY += velY * timePassed * speedMod;
+			a.update(timePassed);
+		}catch(Exception ex){}
 	}
 	
 	//get x,y positions of sprite
@@ -39,6 +42,11 @@ public class Sprite {
 	//set velocities of sprite
 	public void setVelX(float velX){this.velX=velX;}
 	public void setVelY(float velY){this.velY=velY;}
+	
+	//Used in collision detection collisions 
+	public Rectangle getBounds(){
+		return new Rectangle((int)posX,(int)posY,getWidth(),getHeight());
+	}
 	
 	//get sprite's image
 	public Image getImage(){return a.getImage();}
